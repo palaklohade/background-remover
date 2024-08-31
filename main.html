@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Remove Image Background</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <link rel="stylesheet" href="styless.css">
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <div class="logo">
+        <h1>Remove<span>background</span></h1>
+      </div>
+      <nav class="nav">
+        <ul class="nav-links">
+          <li><a href="#">Home</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main class="main-content">
+      <div class="content">
+        <div class="image-section">
+          <img src="placeholder.jpg" alt="Person holding a plant" class="sample-image">
+          <h2>Remove Image Background</h2>
+          <p>100% Automatically and <span class="free-text">Free</span></p>
+        </div>
+        <div class="upload-section">
+          <div class="upload-box">
+            <form> 
+              <div class="form-group">
+                <div class="select">
+                  <label for="filepicker">Select a file:</label>
+                  <input class="form-group" id="filepicker" type="file">
+                </div>
+                </div>
+          
+              <div class="upload">
+                  <button class="upload-button" onclick="handelupload()" type="button">Upload</button>
+                  <button class="download" onclick="downloadFile()" type="button">Download</button>
+              </div>
+          </form>
+            <div class="upload-container">
+            <p> IMAGE</p>
+            <div id="uploadedImageBlock" class="text-center mt-3">
+              <div id="uploadedImage" class="d-flex justify-content-center "></div>
+          </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>    
+    <script>
+        let imageURL;
+
+        function handelupload() {
+            const fileInput = document.getElementById('filepicker');
+            const image = fileInput.files[0];
+            console.log('image')
+            console.log(image)
+            const formData = new FormData();
+            formData.append('image_file', image);
+            formData.append('size', 'auto');
+
+            const apikey = "t6EbtQCvXNQmzSNFbvr7S6W8";
+
+            fetch('https://api.remove.bg/v1.0/removebg', {
+                method: 'POST',
+                mode: 'cors',
+                headers: {
+                    'X-Api-Key': apikey,
+                },
+                body: formData
+            })
+            .then(function(response) {
+                
+                return response.blob();
+            })
+            .then(function(blob) {
+                console.log(blob);
+                const url = URL.createObjectURL(blob);
+
+                imageURL = url;
+                const img = document.createElement('img');
+                img.src = url;
+                img.style.maxWidth = '100%';
+                document.getElementById('uploadedImage').appendChild(img);
+                document.getElementById('upload-text').style.display = 'none';
+
+              })
+            .catch(function(error) {
+                console.error('Error:', error);
+            });
+        }
+
+        function downloadFile(){
+            var anchorElement = document.createElement('a');
+            anchorElement.href = imageURL;
+            anchorElement.download='no-bg.png';
+
+            document.body.appendChild(anchorElement);
+
+            anchorElement.click();
+
+            document.body.removeChild(anchorElement);
+        }
+    </script>
+
+</body>
+</html>
+
+
+
+
+    
+ 
+  
